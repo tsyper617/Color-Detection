@@ -1,6 +1,6 @@
 import cv2
 import pandas as pd
-from sklearn.neighbors import KNeighborsClassifier
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 
 # Load the color dataset
@@ -16,8 +16,8 @@ y = color_data['color']
 # Split the data into training and testing sets (80% train, 20% test)
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-# Initialize the model
-model = KNeighborsClassifier(n_neighbors=3)
+# Initialize the model (Random Forest Classifier)
+model = RandomForestClassifier(n_estimators=100, random_state=42)
 
 # Train the model
 model.fit(X_train, y_train)
@@ -30,7 +30,7 @@ def predict_color(red, green, blue):
 
 # Callback function for mouse events
 def draw_function(event, x, y, flags, param):
-    if event == cv2.EVENT_LBUTTONDBLCLK:
+    if event == cv2.EVENT_LBUTTONDOWN:
         b, g, r = img[y, x]
         b = int(b)
         g = int(g)
@@ -38,6 +38,7 @@ def draw_function(event, x, y, flags, param):
         predicted_color_name = predict_color(r, g, b)
         colors.append((r, g, b, predicted_color_name))  # Append predicted color to the list
 
+        print(predicted_color_name)
         # Log outputs to a file
         with open('output_log.txt', 'a') as f:
             f.write(f"RGB: ({r}, {g}, {b}), Predicted Color: {predicted_color_name}\n")
